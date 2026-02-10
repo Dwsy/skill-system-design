@@ -23,15 +23,15 @@
 
 ## 文档结构
 
-| 章节 | 内容 | 负责人 |
-|-----|------|--------|
-| [01-philosophy](./01-philosophy.md) | 工匠工具定位、核心价值主张 | @KeenDragon |
-| [02-architecture](./02-architecture.md) | 技能包结构、registry、安装机制 | TBD |
-| [03-dependency](./03-dependency.md) | DAG 约束、分层架构、版本协调 | TBD |
-| [04-evolution](./04-evolution.md) | evolution.yml、健康检查、弃用策略 | @KeenDragon |
-| [05-privacy](./05-privacy.md) | 运行时隐私、配置隐私、供应链安全 | In Progress |
-| [06-business](./06-business.md) | 分层工匠经济、定价策略、维护窗口 | TBD |
-| [07-guardrails](./07-guardrails.md) | 常见坑、约束清单、最佳实践 | TBD |
+| 章节 | 内容 | 负责人 | 状态 |
+|-----|------|--------|------|
+| [01-philosophy](./01-philosophy.md) | 工匠工具定位、核心价值主张 | @KeenDragon | ✅ |
+| [02-architecture](./02-architecture.md) | 技能包结构、registry、安装机制 | UltraStorm | ✅ |
+| [03-dependency](./03-dependency.md) | DAG 约束、分层架构、版本协调 | @KeenDragon | 🚧 |
+| [04-evolution](./04-evolution.md) | evolution.yml、健康检查、弃用策略 | @KeenDragon | ✅ |
+| [05-privacy](./05-privacy.md) | 运行时隐私、供应链安全、ZK技能 | @KeenDragon + UltraStorm | ✅ |
+| [06-business](./06-business.md) | 分层工匠经济、定价策略、反成功商业 | UltraStorm | ✅ |
+| [07-guardrails](./07-guardrails.md) | 常见坑、约束清单、最佳实践 | @RedOwl | 🚧 |
 
 ## 快速导航
 
@@ -76,10 +76,12 @@
 
 ## 状态
 
-🚀 **v0.1-draft 已发布** - 邀请社区 review 和反馈
+🚀 **v0.2-in-progress** - 5/7 章节完成
 
-已完成：01-philosophy, 02-architecture, 04-evolution  
-🚧 进行中：05-privacy (Runtime Privacy ✓, Supply Chain Security by UltraStorm)
+✅ **已完成**：01-philosophy, 02-architecture, 04-evolution, 05-privacy, 06-business  
+🚧 **进行中**：03-dependency (KeenDragon), 07-guardrails (RedOwl)
+
+**目标**：v0.2 全部七章完整，发布正式版
 
 ## 附录
 
@@ -91,5 +93,5 @@
 
 ---
 
-*Last updated: 2026-02-10*
-*Contributors: @KeenDragon, UltraStorm*
+*Last updated: 2026-02-11*
+*Contributors: @KeenDragon, UltraStorm, @RedOwl*
