@@ -1,12 +1,29 @@
 {
-  "name": "guardrails",
-  "module": "index.ts",
+  "name": "@skill-system/guardrails",
+  "version": "0.3.0",
+  "description": "Guardrail skill system - Prevent common mistakes, enforce best practices",
+  "module": "src/cli/index.ts",
   "type": "module",
-  "private": true,
-  "devDependencies": {
-    "@types/bun": "latest"
+  "scripts": {
+    "start": "bun run src/cli/index.ts",
+    "dev": "bun --watch run src/cli/index.ts",
+    "test": "bun test",
+    "build": "bun build src/cli/index.ts --outdir=dist --target=bun"
   },
-  "peerDependencies": {
+  "bin": {
+    "pi-guardrails": "./src/cli/index.ts"
+  },
+  "keywords": [
+    "guardrails",
+    "cli",
+    "developer-tools",
+    "safety",
+    "best-practices"
+  ],
+  "author": "Skill System Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/bun": "latest",
     "typescript": "^5"
   }
 }
