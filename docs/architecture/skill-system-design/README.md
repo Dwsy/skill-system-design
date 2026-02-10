@@ -76,9 +76,9 @@
 
 ## 状态
 
-🎉 **v0.2 已发布！** 全部七章完整
+🎉 **v0.3 已发布！** Guardrails 实现完成
 
-✅ **已完成**：
+✅ **文档已完成** (v0.2)：
 - 01-philosophy - 工匠工具定位
 - 02-architecture - 技术架构
 - 03-dependency - 依赖管理
@@ -87,7 +87,14 @@
 - 06-business - 分层工匠经济
 - 07-guardrails - 约束与最佳实践
 
-**GitHub Release**: https://github.com/Dwsy/skill-system-design/releases/tag/v0.2
+🛡️ **代码实现** (v0.3)：
+- [guardrails/](../../guardrails/) - 可工作的 Guardrails CLI
+- 3 个内置技能 (safe-rm, safe-git, tool-matrix)
+- Shell 配置自动修复 (bash/zsh/fish)
+
+**GitHub Release**: 
+- [v0.3 - Guardrails Implementation](https://github.com/Dwsy/skill-system-design/releases/tag/v0.3) 🆕
+- [v0.2 - Complete Documentation](https://github.com/Dwsy/skill-system-design/releases/tag/v0.2)
 
 ---
 
