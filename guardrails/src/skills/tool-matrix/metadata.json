@@ -1,0 +1,32 @@
+{
+  "name": "@builtin/tool-matrix",
+  "version": "1.0.0",
+  "type": "guardrail",
+  "description": "Enforce modern tool usage (fd > find, rg > grep, bat > cat)",
+  "author": "Skill System Team",
+  "entry": {
+    "rules": "rules/index.ts"
+  },
+  "rules": [
+    {
+      "id": "tool-matrix-find-to-fd",
+      "type": "command_intercept",
+      "pattern": "^find\\s+",
+      "severity": "info",
+      "message": "Consider using 'fd' instead of 'find' for better performance and usability",
+      "suggestion": "fd {{args}}"
+    },
+    {
+      "id": "tool-matrix-grep-to-rg",
+      "type": "command_intercept",
+      "pattern": "^grep\\s+",
+      "severity": "info",
+      "message": "Consider using 'rg' (ripgrep) instead of 'grep' for faster search",
+      "suggestion": "rg {{args}}"
+    }
+  ],
+  "config": {
+    "schema": "config/schema.json",
+    "defaults": "config/default.yml"
+  }
+}

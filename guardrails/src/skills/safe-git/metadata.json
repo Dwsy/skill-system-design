@@ -1,0 +1,34 @@
+{
+  "name": "@builtin/safe-git",
+  "version": "1.0.0",
+  "type": "guardrail",
+  "description": "Prevent dangerous git operations like 'git restore .'",
+  "author": "Skill System Team",
+  "entry": {
+    "rules": "rules/index.ts"
+  },
+  "rules": [
+    {
+      "id": "safe-git-restore-dot",
+      "type": "command_intercept",
+      "pattern": "^git\\s+restore\\s+\\.$",
+      "severity": "error",
+      "message": "'git restore .' will discard ALL changes, including files you didn't modify. This is dangerous in team environments.",
+      "suggestion": "git restore <specific-file>  or  git status --short | grep '^ M' | awk '{print $2}' | xargs git restore",
+      "require_explicit": true
+    },
+    {
+      "id": "safe-git-force-push",
+      "type": "command_intercept",
+      "pattern": "^git\\s+push\\s+.*(--force|-f)",
+      "severity": "warning",
+      "message": "Force push can overwrite others' work. Consider 'git push --force-with-lease' instead.",
+      "suggestion": "git push --force-with-lease",
+      "require_explicit": false
+    }
+  ],
+  "config": {
+    "schema": "config/schema.json",
+    "defaults": "config/default.yml"
+  }
+}

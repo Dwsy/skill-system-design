@@ -1,0 +1,26 @@
+{
+  "name": "@builtin/safe-rm",
+  "version": "1.0.0",
+  "type": "guardrail",
+  "description": "Intercept rm commands and suggest trash",
+  "author": "Skill System Team",
+  "entry": {
+    "rules": "rules/index.ts"
+  },
+  "rules": [
+    {
+      "id": "safe-rm-intercept",
+      "type": "command_intercept",
+      "pattern": "^rm\\s+-rf?",
+      "severity": "warning",
+      "message": "Detected 'rm' command. Consider using 'trash' for safer deletion.",
+      "suggestion": "trash {{args}}",
+      "whitelist": ["/tmp", "/var/tmp"],
+      "require_explicit": false
+    }
+  ],
+  "config": {
+    "schema": "config/schema.json",
+    "defaults": "config/default.yml"
+  }
+}
