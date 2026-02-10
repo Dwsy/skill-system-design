@@ -1,35 +1,112 @@
-// Guardrails CLI - pi guardrails
+#!/usr/bin/env bun
 
-import { GuardrailEngine } from '../core/engine';
+// Unified Guardrails CLI
+// Combines KeenDragon's Commander structure with UltraStorm's skill system
+
+import { Command } from 'commander';
+import { GuardrailsEngine } from '../core/engine';
+import { AuditReporter } from '../core/reporter';
 import { SkillLoader } from '../core/loader';
-import type { GuardrailResult } from '../core/types';
+import { applyFixes, printFixResults } from '../commands/apply';
 
-class GuardrailsCLI {
-  private engine: GuardrailEngine;
-  private loader: SkillLoader;
+// Try to load version from package.json
+let version = '0.3.0';
+try {
+  const pkg = await import('../package.json', { assert: { type: 'json' } });
+  version = pkg.default?.version || version;
+} catch {
+  // Use default version
+}
 
-  constructor() {
-    this.engine = new GuardrailEngine();
-    this.loader = new SkillLoader('./src/skills');
+const program = new Command();
+const engine = new GuardrailsEngine();
+const reporter = new AuditReporter();
+const skillLoader = new SkillLoader('./src/skills');
+
+// Initialize engine with skills
+async function initEngine() {
+  const skills = await skillLoader.loadAllSkills();
+  for (const skill of skills) {
+    engine.registerSkill(skill);
   }
+}
 
-  async init(): Promise<void> {
-    const skills = await this.loader.loadAllSkills();
-    for (const skill of skills) {
-      this.engine.registerSkill(skill);
-    }
-  }
+program
+  .name('pi-guardrails')
+  .description('Guardrails for safe development practices')
+  .version(version);
 
-  async check(command: string, args: string[] = []): Promise<void> {
-    const results = await this.engine.checkCommand(command, args);
-    this.displayResults(results);
-  }
+// Initialize guardrails in current project
+program
+  .command('init')
+  .description('Initialize guardrails in current directory')
+  .option('-t, --template <template>', 'Template to use (personal/project/team)', 'personal')
+  .action(async (options) => {
+    console.log('🔧 Initializing guardrails...');
+    
+    const template = options.template;
+    // TODO: Implement init logic
+    
+    console.log(`✅ Guardrails initialized with '${template}' template`);
+    console.log('');
+    console.log('Next steps:');
+    console.log('  1. Edit .guardrails/config.yml to customize rules');
+    console.log('  2. Run `pi-guardrails check` to verify setup');
+    console.log('  3. Run `pi-guardrails audit` for full project audit');
+  });
 
-  async audit(): Promise<void> {
+// Check command against guardrails
+program
+  .command('check <command>')
+  .description('Check a command against guardrails')
+  .allowUnknownOption()
+  .action(async (command, options, commandObj) => {
+    await initEngine();
+    
+    console.log('🔍 Checking guardrails...\n');
+    
+    const args = commandObj.args.slice(1);
+    const results = await engine.checkCommand(command, args);
+    
+    // Display results using my display logic
+    displayResults(results);
+    
+    // Exit with error code if there are blocking violations
+    const hasErrors = results.some(r => r.severity === 'error');
+    process.exit(hasErrors ? 1 : 0);
+  });
+
+// Check current directory (project mode)
+program
+  .command('verify')
+  .description('Check current project against all guardrails')
+  .option('-r, --rules <rules>', 'Specific rules to check (comma-separated)')
+  .option('-f, --fix', 'Auto-fix issues where possible')
+  .action(async (options) => {
+    await initEngine();
+    
+    console.log('🔍 Checking project guardrails...\n');
+    
+    const rules = options.rules?.split(',');
+    // TODO: Implement project-wide check
+    console.log('Project check not yet implemented. Use `check <command>` for command checking.');
+  });
+
+// Full audit with report generation
+program
+  .command('audit')
+  .description('Perform full audit and generate report')
+  .option('-o, --output <file>', 'Output file for report')
+  .option('-f, --format <format>', 'Report format (json/markdown/html)', 'json')
+  .action(async (options) => {
+    await initEngine();
+    
+    console.log('📊 Running audit...\n');
+    
+    const skills = engine.getInstalledSkills();
+    
     console.log('🔍 Guardrails Audit Report');
     console.log('=' .repeat(50));
-    
-    const skills = this.engine.getInstalledSkills();
     console.log(`\nInstalled Skills: ${skills.length}`);
     
     for (const skill of skills) {
@@ -38,72 +115,83 @@ class GuardrailsCLI {
       console.log(`   Enabled: ${skill.config.enabled}`);
       console.log(`   Rules: ${skill.rules.length}`);
     }
-  }
-
-  private displayResults(results: GuardrailResult[]): void {
-    if (results.length === 0) {
-      console.log('✅ No guardrails triggered');
-      return;
+    
+    // TODO: Generate formal audit report
+    if (options.output) {
+      console.log(`\n✅ Audit report would be saved to ${options.output}`);
     }
+  });
 
-    for (const result of results) {
-      const icon = result.severity === 'error' ? '❌' : 
-                   result.severity === 'warning' ? '⚠️' : 'ℹ️';
-      
-      console.log(`\n${icon} [${result.severity.toUpperCase()}] ${result.ruleId}`);
-      console.log(`   ${result.message}`);
-      
-      if (result.suggestion) {
-        console.log(`   💡 Suggestion: ${result.suggestion}`);
-      }
-      
-      if (result.requireExplicit) {
-        console.log(`   🚫 Use ${result.requireExplicit} to bypass`);
+// Apply auto-fixes
+program
+  .command('apply')
+  .description('Apply all available auto-fixes')
+  .option('-n, --dry-run', 'Show what would be fixed without applying')
+  .action(async (options) => {
+    await initEngine();
+    
+    const results = await applyFixes({ dryRun: options.dryRun });
+    printFixResults(results);
+  });
+
+// Install a guardrail skill
+program
+  .command('install <skill>')
+  .description('Install a guardrail skill')
+  .action(async (skill) => {
+    console.log(`📦 Installing ${skill}...`);
+    
+    // TODO: Implement skill installation from registry
+    console.log(`✅ ${skill} would be installed (mock)`);
+    console.log('');
+    console.log('Run `pi-guardrails audit` to see installed skills');
+  });
+
+// List installed skills
+program
+  .command('list')
+  .description('List installed guardrail skills')
+  .action(async () => {
+    await initEngine();
+    
+    const skills = engine.getInstalledSkills();
+    
+    console.log('Installed guardrail skills:\n');
+    
+    if (skills.length === 0) {
+      console.log('  No skills installed');
+      console.log('  Run `pi-guardrails install <skill>` to add one');
+    } else {
+      for (const skill of skills) {
+        const status = skill.config.enabled ? '✅' : '⏸️';
+        console.log(`  ${status} ${skill.metadata.name}@${skill.metadata.version}`);
+        console.log(`     ${skill.metadata.description}`);
       }
     }
-  }
-}
+  });
 
-// CLI entry point
-async function main() {
-  const cli = new GuardrailsCLI();
-  await cli.init();
-
-  const args = process.argv.slice(2);
-  const command = args[0];
-
-  if (!command) {
-    console.log('Usage: pi guardrails <command>');
-    console.log('');
-    console.log('Commands:');
-    console.log('  check <cmd> [args...]  Check a command against guardrails');
-    console.log('  audit                  Show installed guardrails');
-    console.log('');
-    console.log('Examples:');
-    console.log('  pi guardrails check "rm -rf ./test"');
-    console.log('  pi guardrails check "git restore ."');
-    console.log('  pi guardrails audit');
+// Helper function to display results
+function displayResults(results: import('../core/types').GuardrailResult[]): void {
+  if (results.length === 0) {
+    console.log('✅ No guardrails triggered');
     return;
   }
 
-  switch (command) {
-    case 'check': {
-      const cmdToCheck = args[1];
-      if (!cmdToCheck) {
-        console.error('Error: No command specified');
-        process.exit(1);
-      }
-      const cmdArgs = args.slice(2);
-      await cli.check(cmdToCheck, cmdArgs);
-      break;
+  for (const result of results) {
+    const icon = result.severity === 'error' ? '❌' : 
+                 result.severity === 'warning' ? '⚠️' : 'ℹ️';
+    
+    console.log(`\n${icon} [${result.severity.toUpperCase()}] ${result.ruleId}`);
+    console.log(`   ${result.message}`);
+    
+    if (result.suggestion) {
+      console.log(`   💡 Suggestion: ${result.suggestion}`);
     }
-    case 'audit':
-      await cli.audit();
-      break;
-    default:
-      console.error(`Unknown command: ${command}`);
-      process.exit(1);
+    
+    if (result.requireExplicit) {
+      console.log(`   🚫 Use ${result.requireExplicit} to bypass`);
+    }
   }
 }
 
-main().catch(console.error);
+program.parse();

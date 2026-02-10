@@ -1,0 +1,31 @@
+{
+  "name": "@pi/guardrails",
+  "version": "0.3.0",
+  "description": "Guardrails - 安全护栏与最佳实践",
+  "module": "src/cli.ts",
+  "type": "module",
+  "bin": {
+    "guardrails": "./src/cli.ts",
+    "pi-guardrails": "./src/cli.ts"
+  },
+  "scripts": {
+    "dev": "bun run src/cli.ts",
+    "check": "bun run src/cli.ts check",
+    "init": "bun run src/cli.ts init",
+    "build": "bun build src/cli.ts --outfile=dist/guardrails --target=bun",
+    "test": "bun test"
+  },
+  "keywords": [
+    "guardrails",
+    "safety",
+    "security",
+    "best-practices",
+    "cli"
+  ],
+  "author": "Pi Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5"
+  }
+}
