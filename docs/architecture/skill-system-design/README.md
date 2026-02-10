@@ -29,7 +29,7 @@
 | [02-architecture](./02-architecture.md) | 技能包结构、registry、安装机制 | TBD |
 | [03-dependency](./03-dependency.md) | DAG 约束、分层架构、版本协调 | TBD |
 | [04-evolution](./04-evolution.md) | evolution.yml、健康检查、弃用策略 | @KeenDragon |
-| [05-privacy](./05-privacy.md) | telemetry 分级、隐私沙盒、工匠视角 | TBD |
+| [05-privacy](./05-privacy.md) | 运行时隐私、配置隐私、供应链安全 | In Progress |
 | [06-business](./06-business.md) | 分层工匠经济、定价策略、维护窗口 | TBD |
 | [07-guardrails](./07-guardrails.md) | 常见坑、约束清单、最佳实践 | TBD |
 
@@ -78,7 +78,8 @@
 
 🚀 **v0.1-draft 已发布** - 邀请社区 review 和反馈
 
-已完成：01-philosophy, 02-architecture, 04-evolution
+已完成：01-philosophy, 02-architecture, 04-evolution  
+🚧 进行中：05-privacy (Runtime Privacy ✓, Supply Chain Security by UltraStorm)
 
 ## 附录
 
