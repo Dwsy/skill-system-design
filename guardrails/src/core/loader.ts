@@ -72,7 +72,33 @@ export class SkillLoader {
   }
 
   private async loadRules(skillPath: string, metadata: SkillMetadata): Promise<Rule[]> {
-    if (!metadata.entry.rules) {
+    // First try to use static rules from metadata
+    if (metadata.rules && metadata.rules.length > 0) {
+      // Convert RuleDefinition to Rule objects
+      return metadata.rules.map(def => ({
+        definition: def,
+        check: async (context: any) => {
+          // Simple check implementation based on rule type
+          if (def.type === 'command_intercept' && context.command) {
+            const pattern = new RegExp(def.pattern || def.target || '');
+            if (pattern.test(context.command)) {
+              return {
+                action: def.action === 'block' ? 'BLOCK' : 'WARN' as const,
+                ruleId: def.id,
+                message: def.message,
+                suggestion: def.suggestion,
+                severity: def.severity,
+                fixable: def.action === 'redirect' || def.action === 'suggest'
+              };
+            }
+          }
+          return null;
+        }
+      }));
+    }
+
+    // Fallback to dynamic import if entry.rules is specified
+    if (!metadata.entry?.rules) {
       return [];
     }
 
