@@ -127,10 +127,14 @@ program
   .command('apply')
   .description('Apply all available auto-fixes')
   .option('-n, --dry-run', 'Show what would be fixed without applying')
+  .option('-r, --rule <rule>', 'Apply fix for specific rule only')
   .action(async (options) => {
     await initEngine();
     
-    const results = await applyFixes({ dryRun: options.dryRun });
+    const results = await applyFixes({ 
+      dryRun: options.dryRun,
+      rule: options.rule 
+    });
     printFixResults(results);
   });
 
